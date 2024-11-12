@@ -18,44 +18,30 @@ package com.example.inventory.data
 
 import android.content.Context
 
-/**
- * Interface `AppContainer` berfungsi sebagai kontainer aplikasi untuk Dependency Injection.
- * Dependency Injection (DI) digunakan untuk mengelola dependensi dengan cara yang efisien dan terorganisir,
- * memungkinkan komponen-komponen aplikasi Anda untuk lebih mudah diuji dan dikelola.
- * Interface ini mendefinisikan properti `itemsRepository` yang diimplementasikan dalam kelas-kelas turunannya.
+/*
+ * Interface AppContainer menentukan bahwa setiap kelas yang mengimplementasinya
+ * harus menyediakan properti itemsRepository dari tipe ItemsRepository.
  */
 interface AppContainer {
     val itemsRepository: ItemsRepository
 }
 
-/**
- * Implementasi `AppContainer` yang menyediakan instance dari `OfflineItemsRepository`.
- * `AppDataContainer` digunakan untuk mengelola dan menyediakan dependensi yang diperlukan,
- * khususnya instance `ItemsRepository`.
+/*
+ * Kelas AppDataContainer mengimplementasikan interface AppContainer
+ * dan mengatur akses ke itemsRepository dengan memanfaatkan database.
  */
 class AppDataContainer(private val context: Context) : AppContainer {
-    /**
-     * Implementasi `itemsRepository` yang dibuat secara lazy (malas).
-     * - `by lazy`: Inisialisasi `itemsRepository` hanya akan dilakukan saat pertama kali diakses,
-     *   memastikan bahwa instance hanya dibuat satu kali dan menghemat sumber daya.
+
+    /*
+     * Properti itemsRepository diinisialisasi dengan "lazy", sehingga hanya dibuat
+     * saat pertama kali digunakan.
      */
     override val itemsRepository: ItemsRepository by lazy {
-        // Membuat instance `OfflineItemsRepository` menggunakan `ItemDao` dari `InventoryDatabase`.
+        /*
+         * OfflineItemsRepository dibuat dengan mengambil data dari database lokal,
+         * yang diakses melalui InventoryDatabase dan itemDao().
+         */
         OfflineItemsRepository(InventoryDatabase.getDatabase(context).itemDao())
     }
 }
 
-/*
-Penjelasan:
-1. `AppContainer`
-   - Interface ini mendefinisikan `itemsRepository` sebagai properti yang harus diimplementasikan oleh kelas yang menggunakannya.
-   - Memudahkan pengelolaan dependensi, sehingga komponen aplikasi yang memerlukan `ItemsRepository` dapat dengan mudah mendapatkannya.
-
-2. `AppDataContainer`
-   - Kelas ini mengimplementasikan `AppContainer` dan bertanggung jawab menyediakan instance `ItemsRepository`.
-   - Konstruktor menerima `context` yang diperlukan untuk menginisialisasi `InventoryDatabase`.
-   - `itemsRepository` diinisialisasi menggunakan `by lazy`, sehingga dependensi hanya dibuat saat diperlukan.
-
-Dengan pendekatan ini, Anda mendapatkan struktur yang bersih untuk Dependency Injection,
-mempermudah pengelolaan dependensi di aplikasi, meningkatkan efisiensi, dan membuat kode lebih mudah diuji.
-*/

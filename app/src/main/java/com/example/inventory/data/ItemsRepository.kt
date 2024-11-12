@@ -14,56 +14,38 @@
  * limitations under the License.
  */
 
+/*
+ * Interface ItemsRepository mendefinisikan metode-metode yang akan digunakan
+ * untuk mengelola data item dalam aplikasi. Ini adalah antarmuka yang mengatur
+ * bagaimana aplikasi berinteraksi dengan sumber data.
+ */
+
 package com.example.inventory.data
 
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Interface `ItemsRepository` adalah repository yang menyediakan metode untuk operasi
- * insert, update, delete, dan retrieve (mengambil data) dari sumber data yang diberikan.
- * Repository ini bertindak sebagai lapisan abstraksi antara sumber data (misalnya, database Room)
- * dan komponen lain dalam aplikasi Anda, seperti ViewModel. Penjelasan rinci dari setiap metode
- * dalam interface ini adalah sebagai berikut:
- */
 interface ItemsRepository {
-    /**
-     * Mengambil semua item dari sumber data dalam bentuk `Flow<List<Item>>`.
-     * - `Flow<List<Item>>`: Mengembalikan daftar item secara real-time dan memungkinkan
-     *   pengamatan perubahan data secara otomatis.
-     * - Cocok untuk UI reaktif, di mana perubahan data langsung tercermin di tampilan.
+
+    /*
+     * getAllItemsStream() mengembalikan Flow dari daftar item untuk
+     * mendapatkan semua item yang ada di database.
      */
     fun getAllItemsStream(): Flow<List<Item>>
 
-    /**
-     * Mengambil satu item dari sumber data yang sesuai dengan `id` yang diberikan.
-     * - `Flow<Item?>`: Mengembalikan `Flow` dari `Item` atau `null` jika item tidak ditemukan.
-     * - Berguna untuk mendapatkan dan menampilkan detail spesifik dari item yang dipilih.
+    /*
+     * getItemStream() mengembalikan Flow dari satu item berdasarkan id.
+     * Aliran ini akan mengirimkan data null jika item dengan id tersebut tidak ditemukan.
      */
     fun getItemStream(id: Int): Flow<Item?>
 
-    /**
-     * Menyisipkan item ke dalam sumber data.
-     * - `suspend`: Metode ini dirancang untuk digunakan dengan coroutine agar dapat dijalankan
-     *   secara asinkron tanpa memblokir thread utama.
-     */
+    // Fungsi-fungsi di bawah ini adalah fungsi suspend yang
+    // berarti  dapat dipanggil secara asinkronus
+    // insertItem() adalah fungsi untuk menambahkan item baru ke dalam database.
     suspend fun insertItem(item: Item)
 
-    /**
-     * Menghapus item dari sumber data.
-     * - `suspend`: Operasi ini dilakukan secara asinkron untuk menghindari pemblokiran thread utama.
-     */
+    // deleteItem() adalah fungsi untuk menghapus item dari database.
     suspend fun deleteItem(item: Item)
 
-    /**
-     * Memperbarui item di sumber data.
-     * - `suspend`: Operasi ini dilakukan secara asinkron, memungkinkan performa yang lebih baik
-     *   dalam aplikasi yang responsif.
-     */
+    // updateItem() adalah fungsi untuk memperbarui data item yang sudah ada di database.
     suspend fun updateItem(item: Item)
 }
-
-/*
-Repository ini memisahkan logika data dari logika UI, membuat kode lebih modular dan lebih mudah
-untuk diuji. Dengan menggunakan `Flow`, aplikasi Anda dapat menangani data secara reaktif,
-yang sangat ideal untuk aplikasi berbasis Kotlin.
-*/

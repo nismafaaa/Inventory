@@ -19,30 +19,17 @@ package com.example.inventory.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Entity data class represents a single row in the database.
+/*
+ * Entity data class Item merepresentasikan satu baris dalam tabel database.
+ * @Entity digunakan untuk menandai kelas ini sebagai entitas tabel dalam Room Database,
+ * dengan nama tabel "items".
  */
 @Entity(tableName = "items")
 data class Item(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0, // Kunci utama dengan auto-generasi nilai id, diatur ke 0 secara default.
-    val name: String, // Nama item, disimpan sebagai string.
-    val price: Double, // Harga item, diwakili dalam format angka desimal.
-    val quantity: Int // Jumlah item, diwakili sebagai integer.
+    val id: Int = 0, // id adalah primary key dari tabel "items".
+    val name: String, // name menyimpan nama item.
+    val price: Double, // price menyimpan harga item.
+    val quantity: Int // quantity menyimpan jumlah item yang tersedia.
 )
 
-/*
-Penjelasan:
-1. `@Entity(tableName = "items")`
-   - Anotasi ini mendeklarasikan bahwa `Item` adalah entitas Room dan akan dipetakan ke tabel bernama "items" di database.
-
-2. `@PrimaryKey(autoGenerate = true)`
-   - Properti `id` berfungsi sebagai kunci utama, dan Room akan secara otomatis menghasilkan nilai unik untuk `id` saat entitas baru dimasukkan.
-
-3. Properti lainnya (`name`, `price`, `quantity`) merepresentasikan atribut dari item tersebut:
-   - `name`: Menyimpan nama item.
-   - `price`: Menyimpan harga item dengan tipe `Double` untuk menangani nilai desimal.
-   - `quantity`: Menyimpan jumlah item dalam bentuk bilangan bulat.
-
-Kelas ini mendukung penyimpanan dan pengambilan data menggunakan Room, mempermudah pengelolaan data berbasis SQLite.
-*/

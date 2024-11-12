@@ -28,50 +28,56 @@ import com.example.inventory.ui.item.ItemDetailsViewModel
 import com.example.inventory.ui.item.ItemEditViewModel
 import com.example.inventory.ui.item.ItemEntryViewModel
 
-/**
- * Menyediakan Factory untuk membuat instance ViewModel untuk seluruh aplikasi Inventory.
- *
- * Objek ini mendefinisikan `Factory` menggunakan `viewModelFactory` yang berisi inisialisasi
- * untuk setiap ViewModel yang digunakan di aplikasi. Setiap `initializer` mendefinisikan
- * cara membuat instance dari masing-masing ViewModel, yang memungkinkan penyediaan dependensi
- * yang diperlukan seperti `itemsRepository` atau `SavedStateHandle`.
- */
 object AppViewModelProvider {
+    /*
+     * Factory untuk membuat instance dari berbagai ViewModel.
+     * ViewModel ini digunakan untuk mengelola status UI dan logika bisnis dalam aplikasi.
+     */
     val Factory = viewModelFactory {
-        // Inisialisasi untuk ItemEditViewModel
+
+        /*
+         * Inisialisasi untuk ItemEditViewModel.
+         * viewModelFactory memastikan bahwa setiap ViewModel memiliki dependensi yang diperlukan.
+         * `SavedStateHandle` digunakan untuk menyimpan dan memulihkan status UI.
+         */
         initializer {
             ItemEditViewModel(
                 this.createSavedStateHandle()   // Mengirimkan SavedStateHandle ke ViewModel
             )
         }
-        // Inisialisasi untuk ItemEntryViewModel
+
+        /*
+         * Inisialisasi untuk ItemEntryViewModel.
+         * `inventoryApplication().container.itemsRepository` digunakan untuk mendapatkan repository.
+         */
         initializer {
-            ItemEntryViewModel(inventoryApplication().container.itemsRepository)     // Mengirimkan repository yang diperlukan
+            ItemEntryViewModel(inventoryApplication().container.itemsRepository) // Mengirimkan repository yang diperlukan
         }
 
-        // Inisialisasi untuk ItemDetailsViewModel
+        /*
+         * Inisialisasi untuk ItemDetailsViewModel.
+         * ViewModel ini memerlukan SavedStateHandle untuk menyimpan status entri item.
+         */
         initializer {
             ItemDetailsViewModel(
-                this.createSavedStateHandle()   // Mengirimkan SavedStateHandle ke ViewModel
+                this.createSavedStateHandle() // Mengirimkan SavedStateHandle ke ViewModel
             )
         }
 
-        // Inisialisasi untuk HomeViewModel
+        /*
+         * Inisialisasi untuk HomeViewModel.
+         * HomeViewModel dibuat tanpa dependensi tambahan, karena tidak memerlukan parameter.
+         */
         initializer {
             HomeViewModel() // Membuat instance HomeViewModel tanpa dependensi tambahan
         }
     }
 }
 
-/**
- * Fungsi ekstensi untuk mendapatkan objek 'Application' dan mengembalikan instance
- * dari 'InventoryApplication'.
- *
- * Fungsi ini mengakses `APPLICATION_KEY` untuk mengambil instance `Application` yang ada,
- * kemudian mengonversinya menjadi `InventoryApplication`. Ini berguna saat Anda membutuhkan
- * akses ke konteks aplikasi atau dependensi global dalam `ViewModel`.
- *
- * @return Instance dari `InventoryApplication` yang saat ini aktif.
+/*
+ * Ekstensi fungsi untuk mendapatkan aplikasi InventoryApplication dari CreationExtras.
+ * Digunakan untuk mengakses container aplikasi yang menyimpan dependensi seperti repository.
  */
 fun CreationExtras.inventoryApplication(): InventoryApplication =
     (this[AndroidViewModelFactory.APPLICATION_KEY] as InventoryApplication)
+

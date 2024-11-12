@@ -59,18 +59,20 @@ object HomeDestination : NavigationDestination {
     override val titleRes = R.string.app_name
 }
 
-/**
- * Entry route for Home screen
+/*
+ * HomeScreen adalah fungsi Composable yang berfungsi sebagai layar utama aplikasi.
+ * Layar ini menampilkan daftar item dan menyediakan tombol untuk menambah item baru.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToItemEntry: () -> Unit,
-    navigateToItemUpdate: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    navigateToItemEntry: () -> Unit, // Fungsi untuk navigasi ke layar input item baru
+    navigateToItemUpdate: (Int) -> Unit, // Fungsi untuk navigasi ke layar update item berdasarkan id
+    modifier: Modifier = Modifier // Modifier untuk kustomisasi tampilan
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    // Scaffold untuk membuat struktur halaman dengan TopAppBar dan FloatingActionButton
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -81,8 +83,9 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
+            // FloatingActionButton untuk menambah item baru
             FloatingActionButton(
-                onClick = navigateToItemEntry,
+                onClick = navigateToItemEntry, // Mengarahkan ke halaman input item
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
             ) {
@@ -93,19 +96,21 @@ fun HomeScreen(
             }
         },
     ) { innerPadding ->
+        // Menampilkan konten HomeBody yang berisi daftar item
         HomeBody(
-            itemList = listOf(),
-            onItemClick = navigateToItemUpdate,
+            itemList = listOf(), // Daftar item
+            onItemClick = navigateToItemUpdate, // Fungsi untuk mengupdate item
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
         )
     }
 }
 
+// HomeBody adalah fungsi yang menampilkan daftar item atau pesan jika tidak ada item.
 @Composable
 private fun HomeBody(
-    itemList: List<Item>,
-    onItemClick: (Int) -> Unit,
+    itemList: List<Item>, // Daftar item yang akan ditampilkan
+    onItemClick: (Int) -> Unit, // Fungsi yang akan dipanggil saat item diklik
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -114,6 +119,7 @@ private fun HomeBody(
         modifier = modifier,
     ) {
         if (itemList.isEmpty()) {
+            // Menampilkan teks jika daftar item kosong
             Text(
                 text = stringResource(R.string.no_item_description),
                 textAlign = TextAlign.Center,
@@ -121,9 +127,10 @@ private fun HomeBody(
                 modifier = Modifier.padding(contentPadding),
             )
         } else {
+            // Menampilkan daftar item menggunakan InventoryList
             InventoryList(
                 itemList = itemList,
-                onItemClick = { onItemClick(it.id) },
+                onItemClick = { onItemClick(it.id) }, // Mengirim id item untuk update
                 contentPadding = contentPadding,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
             )
@@ -131,10 +138,11 @@ private fun HomeBody(
     }
 }
 
+// InventoryList adalah fungsi untuk menampilkan daftar item dalam bentuk LazyColumn.
 @Composable
 private fun InventoryList(
-    itemList: List<Item>,
-    onItemClick: (Item) -> Unit,
+    itemList: List<Item>, // Daftar item yang akan ditampilkan
+    onItemClick: (Item) -> Unit, // Fungsi yang dipanggil saat item diklik
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -143,6 +151,7 @@ private fun InventoryList(
         contentPadding = contentPadding
     ) {
         items(items = itemList, key = { it.id }) { item ->
+            // Menampilkan item di dalam InventoryItem yang bisa diklik
             InventoryItem(item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
@@ -151,6 +160,7 @@ private fun InventoryList(
     }
 }
 
+// InventoryItem menampilkan informasi item dalam bentuk card, termasuk nama, harga, dan stok.
 @Composable
 private fun InventoryItem(
     item: Item, modifier: Modifier = Modifier
@@ -166,16 +176,18 @@ private fun InventoryItem(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                // Menampilkan nama item dan harga
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f)) // Memberi spasi antara nama dan harga
                 Text(
-                    text = item.formatedPrice(),
+                    text = item.formatedPrice(), // Format harga item
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+            // Menampilkan jumlah stok item
             Text(
                 text = stringResource(R.string.in_stock, item.quantity),
                 style = MaterialTheme.typography.titleMedium
@@ -184,6 +196,7 @@ private fun InventoryItem(
     }
 }
 
+// Fungsi preview untuk menampilkan contoh tampilan HomeBody dengan item.
 @Preview(showBackground = true)
 @Composable
 fun HomeBodyPreview() {
@@ -194,6 +207,7 @@ fun HomeBodyPreview() {
     }
 }
 
+// Fungsi preview untuk menampilkan tampilan HomeBody saat tidak ada item.
 @Preview(showBackground = true)
 @Composable
 fun HomeBodyEmptyListPreview() {
@@ -202,6 +216,7 @@ fun HomeBodyEmptyListPreview() {
     }
 }
 
+// Fungsi preview untuk menampilkan tampilan InventoryItem.
 @Preview(showBackground = true)
 @Composable
 fun InventoryItemPreview() {

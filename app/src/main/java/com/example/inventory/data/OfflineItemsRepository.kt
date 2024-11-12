@@ -18,53 +18,41 @@ package com.example.inventory.data
 
 import kotlinx.coroutines.flow.Flow
 
+/*
+ * OfflineItemsRepository adalah implementasi dari interface ItemsRepository.
+ * Repository ini menggunakan itemDao untuk mengakses database secara offline.
+ */
 class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
+
+    /*
+     * getAllItemsStream() mengembalikan Flow dari semua item di database,
+     * memanggil metode getAllItems() dari itemDao untuk mendapatkan data.
+     */
     override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
 
+    /*
+     * getItemStream() mengembalikan Flow dari item berdasarkan id yang diberikan,
+     * memanggil metode getItem() dari itemDao.
+     */
     override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
 
+    /*
+     * insertItem() adalah fungsi suspend yang menambahkan item baru ke database
+     * dengan memanggil metode insert() dari itemDao.
+     */
     override suspend fun insertItem(item: Item) = itemDao.insert(item)
 
+    /*
+     * deleteItem() adalah fungsi suspend yang menghapus item dari database
+     * dengan memanggil metode delete() dari itemDao.
+     */
     override suspend fun deleteItem(item: Item) = itemDao.delete(item)
 
+    /*
+     * updateItem() adalah fungsi suspend yang memperbarui data item di database
+     * dengan memanggil metode update() dari itemDao.
+     */
     override suspend fun updateItem(item: Item) = itemDao.update(item)
 }
 
-/*
-Kelas `OfflineItemsRepository` adalah implementasi dari interface `ItemsRepository` yang
-menggunakan `ItemDao` untuk mengakses dan mengelola data dalam database Room. Kelas ini
-menangani semua operasi data secara offline, menggunakan Room sebagai sumber data lokal.
-Berikut adalah penjelasan rinci tentang implementasi ini:
 
-1. `class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository`
-   - Kelas `OfflineItemsRepository` mengimplementasikan interface `ItemsRepository`.
-   - `itemDao`: Objek DAO (Data Access Object) yang digunakan untuk menjalankan operasi database.
-   - Kelas ini menerima `itemDao` sebagai parameter konstruktor dan menggunakannya untuk berinteraksi
-     dengan database Room.
-
-2. `override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()`
-   - Metode ini mengembalikan aliran (`Flow`) dari daftar semua item di database, seperti yang diambil
-     oleh `ItemDao`.
-   - `Flow<List<Item>>` memungkinkan pengamatan perubahan data secara real-time.
-
-3. `override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)`
-   - Metode ini mengembalikan aliran (`Flow`) dari item tertentu berdasarkan `id`.
-   - `Flow<Item?>` mengembalikan item atau `null` jika item dengan `id` tersebut tidak ditemukan.
-
-4. `override suspend fun insertItem(item: Item) = itemDao.insert(item)`
-   - Metode ini menyisipkan item baru ke dalam database, menggunakan `ItemDao`.
-   - `suspend` memungkinkan metode ini dieksekusi secara asinkron dengan coroutine, memastikan
-     bahwa operasi basis data tidak memblokir thread utama.
-
-5. `override suspend fun deleteItem(item: Item) = itemDao.delete(item)`
-   - Metode ini menghapus item dari database.
-   - Menggunakan kata kunci `suspend` untuk mendukung eksekusi asinkron.
-
-6. `override suspend fun updateItem(item: Item) = itemDao.update(item)`
-   - Metode ini memperbarui data item yang ada di database.
-   - Juga menggunakan `suspend` untuk operasi asinkron, menjaga performa aplikasi.
-
-Kelas `OfflineItemsRepository` memanfaatkan Room dan DAO untuk menyederhanakan operasi basis data.
-Dengan memisahkan logika akses data dari komponen lain, kelas ini membuat kode lebih terorganisir dan
-mudah diuji. Penggunaan coroutine dengan kata kunci `suspend` membantu menjaga responsivitas UI.
-*/
